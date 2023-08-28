@@ -1,0 +1,92 @@
+\documentclass{article}
+
+\usepackage[english]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+
+\usepackage[margin=2.5cm]{geometry}
+\usepackage[bottom]{footmisc}
+
+\usepackage{enumitem}
+\usepackage{hyperref}
+\usepackage{siunitx}
+
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{bm}
+%\usepackage{minipage}
+
+\title{\Large{INFO8006: Project 2 -- Report}}
+\author{Alyssa Di Matteo -- s201486\\Manon Gerard -- s201354}
+
+\begin{document}
+
+\maketitle
+
+\section{Formalization}
+
+\begin{description}
+    
+    \item[State space]:\\
+    The state space contains the Pacman position, the ghost position, a boolean matrix that contains the position of the food, the directions of the ghost and the next player to play. 
+    
+    \item[Initial state]:\\
+    The initial state includes the initial position of Pacman, the initial position of the ghost, a boolean matrix that contains the initial position of the food, the initial directions of the ghost and the initial player (Pacman). 
+    
+    \item[Player function]: \\
+    This function tells us which player has the move. In our case, it returns (p+1)\%2. If this is 0 Pacman has to move and if it is 1 the ghost has to move, p corresponds to the player.
+    
+    \item[Actions]: \\
+    The two agents are allowed to go in 4 directions, which are North, South, West and East. Agents can also stop, but only if they are surrounded by 4 walls, which isn't the case here.
+    
+    \item[Transition model] : \\
+    The transition model allows to return the state of the game after one of the two agents has performed a legal action.
+
+    
+    \item[Terminal test]: \\
+    The terminal state check if the game is over, so when Pacman ate all the food, if he was eaten by the ghost and also if Pacman is doing a cycle.
+    
+    \item[Utility function]:\\
+    The utility function assigns a numerical value at the end of the game, which corresponds to the state where either Pacman or the ghost has won. In our case, the utility function will be the score of the game which corresponds to :
+\begin{center}
+
+     utility(s, p) = $
+    \left\{
+    \begin{array}{ll}
+        10*\text{(number of eaten food dots)} - 1*\text{(time steps)} + 500, & \text{if p = Pacman}\\
+        10*\text{(number of eaten food dots)} - 1*\text{(time steps)} - 500, & \text{otherwise}
+    \end{array}
+    \right.$
+     
+\end{center}
+    
+     
+\end{description}
+
+\section{Minimax}
+
+\begin{enumerate}[leftmargin=*, label=\alph*.]
+    \item No, minimax isn't guaranteed to be complete as it can perform cycles. If we prevent cycles, then it can be complete.
+
+    \item A cycle is only advantageous if Pacman has no choice to do one. Indeed, in case Pacman does not have any path to follow, instead of losing he could go through a cycle, which would allow the game to continue.
+    
+    \item To guarantee completeness, the minimax algorithm gives an extreme value to the cycle, which will allow Pacman to avoid it and keep an optimal solution unless it has no better choice. To best represent the reality, we chose $\infty$ and -$\infty$ as extreme values because when Pacman will go through a cycle it will always decrease the score and therefore arrive at $-\infty$.
+\end{enumerate}
+
+\section{Heuristic}
+
+\begin{description}
+    
+    \item[Cut off]:\\
+    Our cutoff function decides to stop the expansion of states if Pacman has won or lost and if the depth of recursion is larger than our fixed value. We have chosen to fix this value to 5 as it was a good compromise between the time and the score. With lower values, the score was smaller but it took less time and fewer nodes. Therefore, we prioritized a better score with a reasonable time.
+
+    \item[Heuristic]:\\
+    Our heuristic function returns an estimate of the score of a state. To compute it, we started by finding the smallest rectangle surrounding the foods, which will allow us to compute the minimum distance Pacman must travel horizontally and vertically to get the farthest foods.  With these distances, we have established the distance that Pacman still has to travel to go to all the sides of the rectangle. 
+    This distance is calculated under the assumption that no wall blocks Pacman's path. This calculation is what we called h. We subtracted it from g, which initially represented the score. To avoid cycles, we looked if the state we are in has already been traversed and if so we subtracted from g, 10 exponent the number of times we have visited a state. We have chosen to put a term with an exponent because it can become very large quickly, which will allow us to disadvantage the state and thus avoid cycles.
+    
+    %Our heuristic function returns an estimate of the score of a state. To compute it, we calculated the minimal distance Pacman still had to do horizontally and vertically to get the furthest foods. To do that, we found the smallest box that could surround all the foods. Then we established the distance that Pacman still had to do to go to all of this box's sides. This distance is calculated by making the assumption that there are no walls blocking Pacman's way. This calculation is what we have called h, and we subtracted it from our answer. To the answer, we added the score of the game and we substracted 10 exponent the number of times we have visited the state. This last term avoided cycles being done as an exponent becomes big quickly and we want to avoid going back too many times to those cycles.
+
+
+\end{description}
+
+\end{document}
