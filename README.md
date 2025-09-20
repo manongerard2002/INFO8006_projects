@@ -10,7 +10,7 @@ The goal of this programming project is to implement intelligent agents for the 
 ## Scores
 
 * Project 1 received a score of **16/20**.
-* Project 2 received a score of **10/16** for the code and **3.22/4** for the report.
+* Project 2 received a score of **10/16** for the code and **3.22/4** for the [report](project2/submission_144328994.pdf).
 * Project 3 received a score of **20/20**.
 
 ## Installation
